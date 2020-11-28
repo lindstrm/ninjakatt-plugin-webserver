@@ -13,9 +13,7 @@
             v-for="(entry, i) in entries"
             :key="i"
             :class="'log-' + entry.color"
-          >
-            [{{ entry.date }}] {{ entry.message }}
-          </li>
+          >[{{ entry.date }}] {{ entry.message }}</li>
         </ul>
       </div>
     </div>
