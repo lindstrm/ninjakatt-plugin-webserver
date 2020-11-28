@@ -2,7 +2,7 @@ $background-color: #1c1e1f;
 $text-color-dark: #414b53;
 $text-color: #e8f7ee;
 $link-color: #a7c553;
-$hover-color: $link-color;
+$hover-color: fade-in(darken(desaturate($link-color, 40%), 35%), 0.4);
 $title-color: #a7c553;
 $box-background-color: darken($background-color, 3%);
 $orange-color: rgb(255, 115, 0)
