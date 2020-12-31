@@ -64,22 +64,11 @@
           <th></th>
         </thead>
         <transition-group tag="tbody" name="list">
-          <tr
-            v-for="torrent in sortedList"
-            :class="torrent.state"
-            :key="torrent.name"
-          >
+          <tr v-for="torrent in sortedList" :class="torrent.state" :key="torrent.name">
             <td v-text="torrent.name"></td>
             <td v-text="torrent.ratio.toFixed(2)"></td>
             <td v-text="prettierBytes(torrent.downloaded || 0)"></td>
-            <td
-              v-text="
-                formatDistanceStrict(
-                  new Date(),
-                  new Date(torrent.added_on * 1000)
-                )
-              "
-            ></td>
+            <td v-text="formatDistanceStrict(new Date(), new Date(torrent.added_on * 1000))"></td>
             <td
               class="center-text"
               v-text="`${torrent.num_complete} / ${torrent.num_incomplete}`"
@@ -88,9 +77,7 @@
             <td v-text="`${prettierBytes(torrent.upspeed || 0)}/s`"></td>
             <td v-text="torrent.trackerName"></td>
             <td>
-              <progress-bar
-                :progress="+(torrent.progress * 100).toFixed(2)"
-              ></progress-bar>
+              <progress-bar :progress="+(torrent.progress * 100).toFixed(2)"></progress-bar>
             </td>
             <td :title="torrent.state" v-html="getIcon(torrent.state)"></td>
           </tr>
@@ -105,10 +92,11 @@
 import { formatDistanceStrict } from "date-fns";
 import ProgressBar from "../components/ProgressBar.vue";
 const prettierBytes = require("prettier-bytes");
-
 export default {
   name: "Qbittorrent",
-  components: { ProgressBar },
+  components: {
+    ProgressBar,
+  },
   data() {
     return {
       inview: false,

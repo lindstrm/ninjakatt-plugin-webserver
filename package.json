@@ -37,6 +37,7 @@
     "prettier-bytes": "^1.0.4",
     "rimraf": "^3.0.2",
     "sass-loader": "^8.0.2",
+    "vodal": "^2.4.0",
     "vue": "^2.6.12",
     "vue-router": "^3.4.9",
     "vue-template-compiler": "^2.6.12"
@@ -52,7 +53,9 @@
       "@vue/prettier"
     ],
     "rules": {
-      "quotes": 0,
+      "quotes": [
+        0
+      ],
       "no-console": 0,
       "prettier/prettier": [
         "warn",

@@ -6,6 +6,7 @@ import QbittorrentView from './views/QbittorrentView.vue';
 import TorrentrssView from './views/TorrentrssView.vue';
 import KodiView from './views/KodiView.vue';
 import LoggerView from './views/LoggerView.vue';
+import MoviesView from './views/MoviesView.vue';
 import VersionsView from './views/VersionsView.vue';
 
 Vue.use(Router);
@@ -36,6 +37,11 @@ export default new Router({
       path: '/logger',
       name: 'logger',
       component: LoggerView,
+    },
+    {
+      path: '/movies',
+      name: 'movies',
+      component: MoviesView,
     },
     {
       path: '/versions',
