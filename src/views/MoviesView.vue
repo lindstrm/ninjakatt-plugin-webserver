@@ -340,10 +340,9 @@ export default {
     line-height: normal;
     padding: 5px 10px;
     z-index: 5;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: black;
+    position: fixed;
+    background-color: $nav-bg;
+    color: #000;
   }
   .movie {
     width: fit-content;
