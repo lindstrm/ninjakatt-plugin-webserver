@@ -91,7 +91,7 @@ nav {
   }
   li a {
     line-height: normal;
-    padding: 10px 10px 5px 10px;
+    padding: 10px;
     color: $background-color;
 
     &:hover {
@@ -159,7 +159,11 @@ a.router-link-exact-active:not(.logo)::before {
   content: "^.^";
 }
 
-#app.minimized a span {
+#app.minimized nav a {
+  padding: 10px 10px 5px 10px;
+}
+
+#app.minimized nav a span {
   width: 24px;
   padding-left: 10px;
   letter-spacing: 10px;

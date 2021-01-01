@@ -8,6 +8,13 @@
         <i class="fas fa-cogs"></i>
       </div>
     </div>
+
+    <div class="upcoming" v-if="upcoming.length">
+      <div class="movie" v-for="movie in upcoming" :key="movie.id">
+        <img class="cursor-pointer" v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`" @click="activeUpcoming = movie; showUpcoming = true;">
+      </div>
+    </div>
+
     <div class="container">
       <table class="datalist torrents" v-if="entries.length > 0">
         <thead>
@@ -56,10 +63,13 @@
       </div>
     </vodal>
 
-    <vodal v-if="settingsModal" :show="settingsModal" @hide="settingsModal = false" :width="600" :height="300" :closeButton="false">
-      <div style="height: 238px;">
+    <vodal v-if="settingsModal" :show="settingsModal" @hide="settingsModal = false" :width="600" :height="350" :closeButton="false">
+      <div style="height: 288px;">
         <h4>Save path</h4>
         <input type="text" placeholder="Save path" v-model="settings.savePath">
+        <h4 class="sub">TMDB API Key</h4>
+        <a class="subtext" href="https://www.themoviedb.org/settings/api" target="_blank">Get one here</a>
+        <input type="text" placeholder="Key" v-model="settings.tmdbAPIKey">
         <h4>Minimum resolution</h4>
         <select v-model="settings.minResolution">
           <option value></option>
@@ -77,11 +87,28 @@
         </button>
       </div>
     </vodal>
+
+    <vodal :show="showUpcoming" @hide="showUpcoming = false" :width="600" :height="450" :closeButton="false">
+      <div v-if="activeUpcoming" class="movie-info" style="height: 390px;">
+        <h2 class="sub">{{ activeUpcoming.title }}</h2>
+        <div class="subtext">{{ activeUpcoming.original_title !== activeUpcoming.title ? `${activeUpcoming.original_title}, ` : '' }} Release date: {{ activeUpcoming.release_date }}</div>
+        <div class="trailer center-text">
+          <span v-if="!activeUpcoming.trailer && !activeUpcoming.trailer_error">Loading trailer...</span>
+          <span v-else-if="!activeUpcoming.trailer && activeUpcoming.trailer_error">{{ activeUpcoming.trailer_error }}</span>
+          <iframe v-else width="560" height="315" :src="`https://www.youtube.com/embed/${activeUpcoming.trailer}?controls=0`" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+      </div>
+      <div class="center-text">
+        <button class="btn" @click="addMovie(activeUpcoming.title); showUpcoming = false">
+          Add
+        </button>
+      </div>
+    </vodal>
   </div>
 </template>
 
 <script>
 import { format } from "date-fns";
+const movieTrailer = require("movie-trailer");
 
 export default {
   name: "Movies",
@@ -95,17 +122,41 @@ export default {
       torrentToDownload: null,
       newMovie: null,
       settingsModal: false,
+      upcoming: [],
+      activeUpcoming: null,
+      showUpcoming: false,
     };
   },
   watch: {
     activeMovie(movie) {
       this.show = !!movie;
     },
+    activeUpcoming(movie) {
+      if (!movie || movie.trailer) {
+        return;
+      }
+      movieTrailer(movie.title, { id: true })
+        .then((trailer) => (this.activeUpcoming.trailer = trailer))
+        .catch((err) => (this.activeUpcoming.trailer_error = err.toString()));
+    },
     show(state) {
       if (!state) {
         this.torrentToDownload = null;
         this.activeMovie = null;
       }
+    },
+    showUpcoming(state) {
+      if (!state) {
+        this.activeUpcoming = null;
+      }
+    },
+    settings: {
+      handler: function (curr, old) {
+        if (curr?.tmdbAPIKey && this.upcoming.length === 0) {
+          this.getUpcoming();
+        }
+      },
+      immediate: true,
     },
   },
   mounted() {
@@ -135,10 +186,11 @@ export default {
       this.setSettings(data);
     },
 
-    async addMovie() {
+    async addMovie(movie) {
       const data = await this.$http
-        .post("movies", { movie: this.newMovie })
+        .post("movies", { movie: movie || this.newMovie })
         .then((res) => res.data);
+      this.newMovie = null;
       this.setSettings(data);
     },
 
@@ -157,6 +209,18 @@ export default {
         .then((res) => res.data);
       this.setSettings(data);
       this.settingsModal = false;
+    },
+
+    async getUpcoming() {
+      const data = await this.$http
+        .get("movies/upcoming")
+        .then((res) => res.data);
+      this.upcoming = data;
+      this.upcoming = this.upcoming.sort(
+        (a, b) =>
+          new Date(b.release_date).getTime() -
+          new Date(a.release_date).getTime()
+      );
     },
 
     setSettings(settings) {
@@ -186,8 +250,8 @@ export default {
   }
 }
 .torrent-container {
-  height: 255px;
-  max-height: 255px;
+  height: 245px;
+  max-height: 245px;
   overflow: auto;
 }
 .torrent {
@@ -204,6 +268,27 @@ export default {
   margin-right: 10px;
   &:last-of-type {
     margin-right: 0;
+  }
+}
+
+.upcoming {
+  display: flex;
+  flex-wrap: no-wrap;
+  max-width: 100%;
+  overflow: auto;
+  line-height: 0;
+  .movie {
+    width: fit-content;
+    img {
+      width: 150px;
+    }
+  }
+}
+
+.movie-info {
+  .overview {
+    max-height: 100px;
+    overflow: auto;
   }
 }
 </style>
