@@ -9,8 +9,16 @@
       </div>
     </div>
 
-    <div class="upcoming" v-if="upcoming.length">
+    <div class="movie-scroller" v-if="upcoming.length">
+      <div class="title">Upcoming</div>
       <div class="movie" v-for="movie in upcoming" :key="movie.id">
+        <img class="cursor-pointer" v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`" @click="activeUpcoming = movie; showUpcoming = true;">
+      </div>
+    </div>
+
+    <div class="movie-scroller" v-if="popular.length">
+      <div class="title">Popular</div>
+      <div class="movie" v-for="movie in popular" :key="movie.id">
         <img class="cursor-pointer" v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`" @click="activeUpcoming = movie; showUpcoming = true;">
       </div>
     </div>
@@ -63,8 +71,8 @@
       </div>
     </vodal>
 
-    <vodal v-if="settingsModal" :show="settingsModal" @hide="settingsModal = false" :width="600" :height="350" :closeButton="false">
-      <div style="height: 288px;">
+    <vodal v-if="settingsModal" :show="settingsModal" @hide="settingsModal = false" :width="600" :height="550" :closeButton="false">
+      <div style="height: 488px;">
         <h4>Save path</h4>
         <input type="text" placeholder="Save path" v-model="settings.savePath">
         <h4 class="sub">TMDB API Key</h4>
@@ -80,6 +88,13 @@
             v-text="res"
           ></option>
         </select>
+        <h4>Search URLs</h4>
+        <input type="text" placeholder="New url" @keyup.enter="e => addSearchUrl(e.target.value)" ref="searchUrlInput">
+        <ul class="no-list" style="height: 100px; overflow: auto">
+          <li v-for="(url, i) in settings.searchUrls" :key="url">
+            <input type="text" placeholder="url" v-model="settings.searchUrls[i]">
+          </li>
+        </ul>
       </div>
       <div class="center-text">
         <button class="btn" @click="saveSettings">
@@ -89,19 +104,27 @@
     </vodal>
 
     <vodal :show="showUpcoming" @hide="showUpcoming = false" :width="600" :height="450" :closeButton="false">
-      <div v-if="activeUpcoming" class="movie-info" style="height: 390px;">
-        <h2 class="sub">{{ activeUpcoming.title }}</h2>
-        <div class="subtext">{{ activeUpcoming.original_title !== activeUpcoming.title ? `${activeUpcoming.original_title}, ` : '' }} Release date: {{ activeUpcoming.release_date }}</div>
-        <div class="trailer center-text">
-          <span v-if="!activeUpcoming.trailer && !activeUpcoming.trailer_error">Loading trailer...</span>
-          <span v-else-if="!activeUpcoming.trailer && activeUpcoming.trailer_error">{{ activeUpcoming.trailer_error }}</span>
-          <iframe v-else width="560" height="315" :src="`https://www.youtube.com/embed/${activeUpcoming.trailer}?controls=0`" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-      </div>
-      <div class="center-text">
-        <button class="btn" @click="addMovie(activeUpcoming.title); showUpcoming = false">
-          Add
-        </button>
-      </div>
+      <template v-if="activeUpcoming">
+        <div class="movie-info" style="height: 390px;">
+          <h2 class="sub">{{ activeUpcoming.title }}</h2>
+          <div class="subtext">
+            {{ activeUpcoming.original_title !== activeUpcoming.title ? `${activeUpcoming.original_title}, ` : '' }}
+            Release date: {{ activeUpcoming.release_date }} |
+            <a class="search-link" v-for="search in settings.searchUrls" :key="search" target="_blank" :href="`${search}${encodeURI(activeUpcoming.title)}`">
+              {{ extractRootDomain(search) }}
+            </a>
+          </div>
+          <div class="trailer center-text">
+            <span v-if="!activeUpcoming.trailer && !activeUpcoming.trailer_error">Loading trailer...</span>
+            <span v-else-if="!activeUpcoming.trailer && activeUpcoming.trailer_error">{{ activeUpcoming.trailer_error }}</span>
+            <iframe v-else width="560" height="315" :src="`https://www.youtube.com/embed/${activeUpcoming.trailer}?controls=0`" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+        </div>
+        <div class="center-text">
+          <button :class="{ disabled: isInList(activeUpcoming.title) }" class="btn" @click="addMovie(activeUpcoming.title); showUpcoming = false">
+            Add
+          </button>
+        </div>
+      </template>
     </vodal>
   </div>
 </template>
@@ -109,6 +132,7 @@
 <script>
 import { format } from "date-fns";
 const movieTrailer = require("movie-trailer");
+const { extractRootDomain } = require("../helpers/extract");
 
 export default {
   name: "Movies",
@@ -123,6 +147,7 @@ export default {
       newMovie: null,
       settingsModal: false,
       upcoming: [],
+      popular: [],
       activeUpcoming: null,
       showUpcoming: false,
     };
@@ -136,8 +161,14 @@ export default {
         return;
       }
       movieTrailer(movie.title, { id: true })
-        .then((trailer) => (this.activeUpcoming.trailer = trailer))
-        .catch((err) => (this.activeUpcoming.trailer_error = err.toString()));
+        .then((trailer) => {
+          this.activeUpcoming.trailer = trailer;
+          this.$forceUpdate();
+        })
+        .catch((err) => {
+          this.activeUpcoming.trailer_error = err.toString();
+          this.$forceUpdate();
+        });
     },
     show(state) {
       if (!state) {
@@ -154,6 +185,7 @@ export default {
       handler: function (curr, old) {
         if (curr?.tmdbAPIKey && this.upcoming.length === 0) {
           this.getUpcoming();
+          this.getPopular();
         }
       },
       immediate: true,
@@ -169,9 +201,12 @@ export default {
   },
 
   methods: {
+    extractRootDomain,
     async moviesTimer() {
       const data = await this.$http.get("/movies").then((res) => res.data);
-      this.setSettings(data);
+      if (!this.settings) {
+        this.setSettings(data);
+      }
       if (this.inview) {
         setTimeout(() => {
           this.moviesTimer();
@@ -204,6 +239,9 @@ export default {
 
     async saveSettings() {
       const settings = this.settings;
+
+      settings.searchUrls = settings.searchUrls.filter((x) => x.length);
+
       delete settings.validResolutions;
       const data = await this.$http
         .post("movies/settings", settings)
@@ -226,6 +264,18 @@ export default {
         .reverse();
     },
 
+    async getPopular() {
+      const data = await this.$http
+        .get("movies/popular")
+        .then((res) => res.data);
+      this.popular = data;
+    },
+
+    addSearchUrl(url) {
+      this.settings.searchUrls.push(url);
+      this.$refs.searchUrlInput.value = "";
+    },
+
     setSettings(settings) {
       this.entries = settings.movies;
       delete settings.movies;
@@ -239,6 +289,11 @@ export default {
           y.savePath = this.settings.savePath;
         });
       });
+    },
+    isInList(movie) {
+      return !!this.entries.find(
+        (x) => x.name.toLowerCase() === movie.toLowerCase()
+      );
     },
   },
 };
@@ -274,16 +329,26 @@ export default {
   }
 }
 
-.upcoming {
+.movie-scroller {
   display: flex;
   flex-wrap: no-wrap;
   max-width: 100%;
   overflow: auto;
   line-height: 0;
+  position: relative;
+  .title {
+    line-height: normal;
+    padding: 5px 10px;
+    z-index: 5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: black;
+  }
   .movie {
     width: fit-content;
     img {
-      width: 150px;
+      width: 100px;
     }
   }
 }
@@ -292,6 +357,14 @@ export default {
   .overview {
     max-height: 100px;
     overflow: auto;
+  }
+  .search-link {
+    display: inline;
+    &:not(:last-of-type) {
+      &:after {
+        content: " | ";
+      }
+    }
   }
 }
 </style>
