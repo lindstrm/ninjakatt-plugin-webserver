@@ -217,11 +217,13 @@ export default {
         .get("movies/upcoming")
         .then((res) => res.data);
       this.upcoming = data;
-      this.upcoming = this.upcoming.sort(
-        (a, b) =>
-          new Date(b.release_date).getTime() -
-          new Date(a.release_date).getTime()
-      );
+      this.upcoming = this.upcoming
+        .sort(
+          (a, b) =>
+            new Date(b.release_date).getTime() -
+            new Date(a.release_date).getTime()
+        )
+        .reverse();
     },
 
     setSettings(settings) {
