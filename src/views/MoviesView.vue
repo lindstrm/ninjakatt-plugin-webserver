@@ -2,7 +2,7 @@
   <div>
     <div class="box clearfix">
       <ul class="no-list" v-if="settings">
-        <li><input type="text" v-model="newMovie" @keyup.enter="addMovie" placeholder="Add movie"></li>
+        <li><input type="text" v-model="newMovie" @keyup.enter="e => addMovie(e.target.value)" placeholder="Add movie"></li>
       </ul>
       <div class="settings cursor-pointer" @click="settingsModal = true">
         <i class="fas fa-cogs"></i>
@@ -187,8 +187,9 @@ export default {
     },
 
     async addMovie(movie) {
+      movie = movie.replace(/'/g, "");
       const data = await this.$http
-        .post("movies", { movie: movie || this.newMovie })
+        .post("movies", { movie })
         .then((res) => res.data);
       this.newMovie = null;
       this.setSettings(data);
