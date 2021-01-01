@@ -1,22 +1,12 @@
 <template>
   <div>
-    <div class="box">
-      <ul class="no-list settings" v-if="settings">
+    <div class="box clearfix">
+      <ul class="no-list" v-if="settings">
         <li><input type="text" v-model="newMovie" @keyup.enter="addMovie" placeholder="Add movie"></li>
-        <li>Settings</li>
-        <li><input type="text" placeholder="Save path" v-model="settings.savePath" @keyup.enter="saveSettings"></li>
-        <li>
-          <select v-model="settings.minResolution">
-            <option value></option>
-            <option
-              v-for="res in settings.validResolutions"
-              :key="res"
-              :value="res"
-              v-text="res"
-            ></option>
-          </select>
-        </li>
       </ul>
+      <div class="settings cursor-pointer" @click="settingsModal = true">
+        <i class="fas fa-cogs"></i>
+      </div>
     </div>
     <div class="container">
       <table class="datalist torrents" v-if="entries.length > 0">
@@ -42,7 +32,8 @@
         </transition-group>
       </table>
     </div>
-    <vodal :show="show" @hide="show = false" :width="600" :height="400" :closeButton="false">
+
+    <vodal v-if="show" :show="show" @hide="show = false" :width="600" :height="400" :closeButton="false">
       <div v-if="activeMovie">
         <h2>{{ activeMovie.name }}</h2>
         <div class="torrent-container">
@@ -64,6 +55,28 @@
         </div>
       </div>
     </vodal>
+
+    <vodal v-if="settingsModal" :show="settingsModal" @hide="settingsModal = false" :width="600" :height="300" :closeButton="false">
+      <div style="height: 238px;">
+        <h4>Save path</h4>
+        <input type="text" placeholder="Save path" v-model="settings.savePath">
+        <h4>Minimum resolution</h4>
+        <select v-model="settings.minResolution">
+          <option value></option>
+          <option
+            v-for="res in settings.validResolutions"
+            :key="res"
+            :value="res"
+            v-text="res"
+          ></option>
+        </select>
+      </div>
+      <div class="center-text">
+        <button class="btn" @click="saveSettings">
+          Save
+        </button>
+      </div>
+    </vodal>
   </div>
 </template>
 
@@ -81,6 +94,7 @@ export default {
       show: false,
       torrentToDownload: null,
       newMovie: null,
+      settingsModal: false,
     };
   },
   watch: {
@@ -92,12 +106,6 @@ export default {
         this.torrentToDownload = null;
         this.activeMovie = null;
       }
-    },
-    "settings.minResolution"(res, old) {
-      if (!old) {
-        return;
-      }
-      this.saveSettings();
     },
   },
   mounted() {
@@ -148,6 +156,7 @@ export default {
         .post("movies/settings", settings)
         .then((res) => res.data);
       this.setSettings(data);
+      this.settingsModal = false;
     },
 
     setSettings(settings) {
@@ -183,10 +192,10 @@ export default {
 }
 .torrent {
   padding: 5px 10px;
+  border-radius: 3px;
 
   &.selected {
     background-color: lighten($background-color, 10%);
-    border-radius: 3px;
   }
 }
 

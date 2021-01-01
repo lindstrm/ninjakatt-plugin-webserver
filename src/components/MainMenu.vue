@@ -57,8 +57,6 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/_variables.scss";
 
-$nav-bg: $link-color;
-
 a.logo {
   text-decoration: none;
   margin-bottom: 10px;
@@ -81,6 +79,8 @@ nav {
   position: fixed;
   height: 100vh;
   width: 140px;
+  z-index: 10;
+  box-shadow: 9px 0px 45px -11px rgba(0, 0, 0, 0.75);
   ul {
     position: relative;
     margin: 0;
@@ -91,7 +91,7 @@ nav {
   }
   li a {
     line-height: normal;
-    padding: 10px;
+    padding: 10px 10px 5px 10px;
     color: $background-color;
 
     &:hover {
