@@ -1,5 +1,6 @@
 @import "../../node_modules/vodal/common.css";
 @import "../../node_modules/vodal/rotate.css";
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
 
 @import 'variables';
 @import 'datalist';
@@ -11,7 +12,7 @@
 body {
   background-color: $background-color;
   color: $text-color;
-  font-family: 'Inconsolata', monospace;
+  font-family: 'JetBrains Mono', monospace;
   padding: 0;
   margin: 0;
 }
@@ -72,7 +73,7 @@ input[type='text']:focus {
   position: relative;
   padding: 10px;
   background-color: $box-background-color;
-  color: lighten($text-color-dark, 3%);
+  color: darken($text-color, 3%);
   a {
     color: lighten($text-color-dark, 3%);
     &:hover {
@@ -103,7 +104,7 @@ h4 {
 }
 
 .vodal-dialog {
-  background-color: #111;
+  background-color: lighten($background-color, 5%);
   h2:first-of-type {
     margin-top: 0;
   }

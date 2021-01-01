@@ -19,7 +19,7 @@
       </ul>
     </div>
     <div class="container">
-      <table class="container datalist torrents" v-if="entries.length > 0">
+      <table class="datalist torrents" v-if="entries.length > 0">
         <thead>
           <th class="cursor-pointer">movie</th>
           <th class="cursor-pointer">torrents</th>
@@ -177,8 +177,8 @@ export default {
   }
 }
 .torrent-container {
-  height: 265px;
-  max-height: 265px;
+  height: 255px;
+  max-height: 255px;
   overflow: auto;
 }
 .torrent {

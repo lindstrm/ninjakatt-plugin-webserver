@@ -1,9 +1,10 @@
-$background-color: #1c1e1f;
+$background-color: #141115;
 $text-color-dark: #414b53;
-$text-color: #e8f7ee;
-$link-color: #a7c553;
-$hover-color: fade-in(darken(desaturate($link-color, 40%), 35%), 0.4);
-$title-color: #a7c553;
+$text-color: #84828F;
+$link-color: #DDF45B;
+$hover-color: lighten($background-color, 5%);
+$title-color: lighten($link-color, 5%);
+$title-color-alt: #6A687A;
 $box-background-color: darken($background-color, 3%);
 $orange-color: rgb(255, 115, 0);
 $green-color: rgb(61, 202, 143);

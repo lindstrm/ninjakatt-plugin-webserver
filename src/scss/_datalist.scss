@@ -5,7 +5,7 @@
 .datalist th {
   text-align: left;
   padding-left: 5px;
-  color: $title-color;
+  color: lighten($text-color, 30%);
 }
 
 .datalist th:not(:first-of-type),
@@ -37,4 +37,8 @@
 
 .datalist.four-columns td:first-of-type {
   width: 70%;
+}
+
+button, input {
+  font-family: 'JetBrains Mono', monospace;
 }

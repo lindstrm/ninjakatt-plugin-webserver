@@ -14,10 +14,7 @@
       </li>
     </ul>
     <div class="toggle-size" @click="toggle()">
-      <i
-        class="fas"
-        :class="minimized ? 'fa-angle-double-right' : 'fa-angle-double-left'"
-      ></i>
+      <i class="fas" :class="minimized ? 'fa-angle-double-right' : 'fa-angle-double-left'"></i>
     </div>
   </nav>
 </template>
@@ -60,12 +57,14 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/_variables.scss";
 
+$nav-bg: $link-color;
+
 a.logo {
   text-decoration: none;
   margin-bottom: 10px;
   height: 30px;
   width: 100%;
-  color: $text-color;
+  color: black;
 
   &:before {
     background-color: transparent;
@@ -78,7 +77,7 @@ a.logo {
 }
 
 nav {
-  background-color: darken($background-color, 5%);
+  background-color: $nav-bg;
   position: fixed;
   height: 100vh;
   width: 140px;
@@ -93,14 +92,15 @@ nav {
   li a {
     line-height: normal;
     padding: 10px;
+    color: $background-color;
 
     &:hover {
       span {
-        color: $text-color;
+        color: $nav-bg;
       }
       &:before {
         width: 100%;
-        background-color: $hover-color;
+        background-color: darken($nav-bg, 50%);
       }
     }
   }
@@ -135,14 +135,14 @@ a::before {
   top: 0;
   left: 0;
   position: absolute;
-  background: $hover-color;
+  background: darken($nav-bg, 5%);
   transition: all 0.3s;
   margin: 0 auto;
   z-index: 0;
 }
 
 a.router-link-exact-active:not(.logo) {
-  color: $text-color;
+  color: $nav-bg;
 }
 
 a.router-link-exact-active:not(.logo)::before {
@@ -160,8 +160,9 @@ a.router-link-exact-active:not(.logo)::before {
 }
 
 #app.minimized a span {
-  width: 19px;
+  width: 24px;
   padding-left: 10px;
+  letter-spacing: 10px;
   overflow: hidden;
   text-transform: capitalize;
 }
