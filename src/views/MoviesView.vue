@@ -117,7 +117,7 @@
           <div class="trailer center-text">
             <span v-if="!activeUpcoming.trailer && !activeUpcoming.trailer_error">Loading trailer...</span>
             <span v-else-if="!activeUpcoming.trailer && activeUpcoming.trailer_error">{{ activeUpcoming.trailer_error }}</span>
-            <iframe v-else width="560" height="315" :src="`https://www.youtube.com/embed/${activeUpcoming.trailer}?controls=0`" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            <iframe v-else width="560" height="315" :src="`https://www.youtube.com/embed/${activeUpcoming.trailer}`" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
         </div>
         <div class="center-text">
           <button :class="{ disabled: isInList(activeUpcoming.title) }" class="btn" @click="addMovie(activeUpcoming.title); showUpcoming = false">
