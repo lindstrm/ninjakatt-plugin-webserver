@@ -2,7 +2,14 @@
   <div>
     <div class="box clearfix">
       <ul class="no-list" v-if="settings">
-        <li><input type="text" v-model="newMovie" @keyup.enter="e => addMovie(e.target.value)" placeholder="Add movie"></li>
+        <li>
+          <input
+            type="text"
+            v-model="newMovie"
+            @keyup.enter="e => addMovie(e.target.value)"
+            placeholder="Add movie"
+          />
+        </li>
       </ul>
       <div class="settings cursor-pointer" @click="settingsModal = true">
         <i class="fas fa-cogs"></i>
@@ -12,14 +19,30 @@
     <div class="movie-scroller" v-if="upcoming.length">
       <div class="title">Upcoming</div>
       <div class="movie" v-for="movie in upcoming" :key="movie.id">
-        <img class="cursor-pointer" v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`" @click="activeUpcoming = movie; showUpcoming = true;">
+        <img
+          class="cursor-pointer"
+          v-if="movie.poster_path"
+          :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`"
+          @click="
+            activeUpcoming = movie;
+            showUpcoming = true;
+          "
+        />
       </div>
     </div>
 
     <div class="movie-scroller" v-if="popular.length">
       <div class="title">Popular</div>
       <div class="movie" v-for="movie in popular" :key="movie.id">
-        <img class="cursor-pointer" v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`" @click="activeUpcoming = movie; showUpcoming = true;">
+        <img
+          class="cursor-pointer"
+          v-if="movie.poster_path"
+          :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`"
+          @click="
+            activeUpcoming = movie;
+            showUpcoming = true;
+          "
+        />
       </div>
     </div>
 
@@ -36,8 +59,16 @@
         <transition-group tag="tbody" name="list">
           <tr v-for="movie in entries" :class="movie.state" :key="movie.name">
             <td v-text="movie.name" class="cursor-pointer" @click="activeMovie = movie"></td>
-            <td v-text="movie.torrents.length" class="cursor-pointer" @click="activeMovie = movie"></td>
-            <td v-text="movie.torrents.map(x => x.downloaded).find(x => x === true) ? 'Yes' : 'No'" class="cursor-pointer" @click="activeMovie = movie"></td>
+            <td
+              v-text="movie.torrents.length"
+              class="cursor-pointer"
+              @click="activeMovie = movie"
+            ></td>
+            <td
+              v-text="movie.torrents.map(x => x.downloaded).find(x => x === true) ? 'Yes' : 'No'"
+              class="cursor-pointer"
+              @click="activeMovie = movie"
+            ></td>
             <td>
               <span @click="removeMovie(movie)">
                 <i class="fas fa-trash-alt cursor-pointer"></i>
@@ -48,36 +79,69 @@
       </table>
     </div>
 
-    <vodal v-if="show" :show="show" @hide="show = false" :width="600" :height="400" :closeButton="false">
+    <vodal
+      v-if="show"
+      :show="show"
+      @hide="show = false"
+      :width="600"
+      :height="400"
+      :closeButton="false"
+    >
       <div v-if="activeMovie">
         <h2>{{ activeMovie.name }}</h2>
         <div class="torrent-container">
-          <div class="torrent cursor-pointer" v-for="torrent in activeMovie.torrents" :key="torrent.fileName" @click="torrentToDownload = torrent" :class="{
-            'selected': torrentToDownload && torrentToDownload.uri === torrent.uri
-          }">
+          <div
+            class="torrent cursor-pointer"
+            v-for="torrent in activeMovie.torrents"
+            :key="torrent.fileName"
+            @click="torrentToDownload = torrent"
+            :class="{
+              selected: torrentToDownload && torrentToDownload.uri === torrent.uri,
+            }"
+          >
             {{ torrent.title }}
             <i class="fas fa-check green" v-if="torrent.downloaded"></i>
           </div>
         </div>
         <div class="download">
           <div class="save-path mb10">
-            <input type="text" v-if="torrentToDownload" v-model="torrentToDownload.savePath" placeholder="Save path">
-            <input type="text" v-else disabled placeholder="Save path">
+            <input
+              type="text"
+              v-if="torrentToDownload"
+              v-model="torrentToDownload.savePath"
+              placeholder="Save path"
+            />
+            <input type="text" v-else disabled placeholder="Save path" />
           </div>
-          <button class="btn" @click="downloadTorrent" :class="{ disabled: !!!torrentToDownload || (torrentToDownload && !torrentToDownload.savePath)  }">
+          <button
+            class="btn"
+            @click="downloadTorrent"
+            :class="{
+              disabled: !!!torrentToDownload || (torrentToDownload && !torrentToDownload.savePath),
+            }"
+          >
             Download
           </button>
         </div>
       </div>
     </vodal>
 
-    <vodal v-if="settingsModal" :show="settingsModal" @hide="settingsModal = false" :width="600" :height="550" :closeButton="false">
+    <vodal
+      v-if="settingsModal"
+      :show="settingsModal"
+      @hide="settingsModal = false"
+      :width="600"
+      :height="550"
+      :closeButton="false"
+    >
       <div style="height: 488px;">
         <h4>Save path</h4>
-        <input type="text" placeholder="Save path" v-model="settings.savePath">
+        <input type="text" placeholder="Save path" v-model="settings.savePath" />
         <h4 class="sub">TMDB API Key</h4>
-        <a class="subtext" href="https://www.themoviedb.org/settings/api" target="_blank">Get one here</a>
-        <input type="text" placeholder="Key" v-model="settings.tmdbAPIKey">
+        <a class="subtext" href="https://www.themoviedb.org/settings/api" target="_blank"
+          >Get one here</a
+        >
+        <input type="text" placeholder="Key" v-model="settings.tmdbAPIKey" />
         <h4>Minimum resolution</h4>
         <select v-model="settings.minResolution">
           <option value></option>
@@ -89,10 +153,15 @@
           ></option>
         </select>
         <h4>Search URLs</h4>
-        <input type="text" placeholder="New url" @keyup.enter="e => addSearchUrl(e.target.value)" ref="searchUrlInput">
+        <input
+          type="text"
+          placeholder="New url"
+          @keyup.enter="e => addSearchUrl(e.target.value)"
+          ref="searchUrlInput"
+        />
         <ul class="no-list" style="height: 100px; overflow: auto">
           <li v-for="(url, i) in settings.searchUrls" :key="url">
-            <input type="text" placeholder="url" v-model="settings.searchUrls[i]">
+            <input type="text" placeholder="url" v-model="settings.searchUrls[i]" />
           </li>
         </ul>
       </div>
@@ -103,24 +172,60 @@
       </div>
     </vodal>
 
-    <vodal :show="showUpcoming" @hide="showUpcoming = false" :width="600" :height="450" :closeButton="false">
+    <vodal
+      :show="showUpcoming"
+      @hide="showUpcoming = false"
+      :width="600"
+      :height="450"
+      :closeButton="false"
+    >
       <template v-if="activeUpcoming">
         <div class="movie-info" style="height: 390px;">
           <h2 class="sub">{{ activeUpcoming.title }}</h2>
           <div class="subtext">
-            {{ activeUpcoming.original_title !== activeUpcoming.title ? `${activeUpcoming.original_title}, ` : '' }}
+            {{
+              activeUpcoming.original_title !== activeUpcoming.title
+                ? `${activeUpcoming.original_title}, `
+                : ""
+            }}
             Release date: {{ activeUpcoming.release_date }} |
-            <a class="search-link" v-for="search in settings.searchUrls" :key="search" target="_blank" :href="`${search}${encodeURI(activeUpcoming.title)}`">
+            <a
+              class="search-link"
+              v-for="search in settings.searchUrls"
+              :key="search"
+              target="_blank"
+              :href="`${search}${encodeURI(activeUpcoming.title)}`"
+            >
               {{ extractRootDomain(search) }}
             </a>
           </div>
           <div class="trailer center-text">
-            <span v-if="!activeUpcoming.trailer && !activeUpcoming.trailer_error">Loading trailer...</span>
-            <span v-else-if="!activeUpcoming.trailer && activeUpcoming.trailer_error">{{ activeUpcoming.trailer_error }}</span>
-            <iframe v-else width="560" height="315" :src="`https://www.youtube.com/embed/${activeUpcoming.trailer}`" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            <span v-if="!activeUpcoming.trailer && !activeUpcoming.trailer_error"
+              >Loading trailer...</span
+            >
+            <span v-else-if="!activeUpcoming.trailer && activeUpcoming.trailer_error">{{
+              activeUpcoming.trailer_error
+            }}</span>
+            <iframe
+              v-else
+              width="560"
+              height="315"
+              :src="`https://www.youtube.com/embed/${activeUpcoming.trailer}`"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
         </div>
         <div class="center-text">
-          <button :class="{ disabled: isInList(activeUpcoming.title) }" class="btn" @click="addMovie(activeUpcoming.title); showUpcoming = false">
+          <button
+            :class="{ disabled: isInList(activeUpcoming.title) }"
+            class="btn"
+            @click="
+              addMovie(activeUpcoming.title);
+              showUpcoming = false;
+            "
+          >
             Add
           </button>
         </div>
@@ -342,7 +447,7 @@ export default {
     z-index: 5;
     position: fixed;
     background-color: $nav-bg;
-    color: #000;
+    color: $text-color;
   }
   .movie {
     width: fit-content;

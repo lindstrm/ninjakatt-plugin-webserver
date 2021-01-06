@@ -62,7 +62,7 @@ a.logo {
   margin-bottom: 10px;
   height: 30px;
   width: 100%;
-  color: black;
+  color: red;
 
   &:before {
     background-color: transparent;
@@ -92,7 +92,7 @@ nav {
   li a {
     line-height: normal;
     padding: 10px;
-    color: $background-color;
+    color: $text-color;
 
     &:hover {
       span {
@@ -100,7 +100,7 @@ nav {
       }
       &:before {
         width: 100%;
-        background-color: darken($nav-bg, 50%);
+        background-color: lighten($nav-bg, 50%);
       }
     }
   }
@@ -135,19 +135,19 @@ a::before {
   top: 0;
   left: 0;
   position: absolute;
-  background: darken($nav-bg, 5%);
+  background: lighten($nav-bg, 5%);
   transition: all 0.3s;
   margin: 0 auto;
   z-index: 0;
 }
 
 a.router-link-exact-active:not(.logo) {
-  color: $nav-bg;
+  color: $text-color;
 }
 
 a.router-link-exact-active:not(.logo)::before {
   width: 100%;
-  background-color: $background-color;
+  background-color: lighten($nav-bg, 20%);
 }
 </style>
 

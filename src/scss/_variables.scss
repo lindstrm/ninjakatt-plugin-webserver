@@ -1,11 +1,12 @@
-$background-color: #141115;
+$background-color: rgb(25, 24, 21);
 $text-color-dark: #414b53;
-$text-color: #84828F;
-$link-color: #DDF45B;
+$text-color: rgb(158, 143, 116);
+$link-color: rgb(185, 144, 110);
 $hover-color: lighten($background-color, 5%);
 $title-color: lighten($link-color, 5%);
 $title-color-alt: #6A687A;
-$box-background-color: darken($background-color, 3%);
+$box-background-color: lighten($background-color, 25%);
+$box-text-color: lighten($box-background-color, 20%);
 $orange-color: rgb(255, 115, 0);
 $green-color: rgb(61, 202, 143);
-$nav-bg: $link-color;
+$nav-bg: lighten(rgb(25, 24, 21), 5%);
