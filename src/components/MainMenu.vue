@@ -142,7 +142,7 @@ a::before {
 }
 
 a.router-link-exact-active:not(.logo) {
-  color: $text-color;
+  color: $nav-bg;
 }
 
 a.router-link-exact-active:not(.logo)::before {
