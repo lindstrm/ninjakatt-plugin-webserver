@@ -59,14 +59,18 @@ export default {
 
 a.logo {
   text-decoration: none;
-  margin-bottom: 10px;
-  height: 30px;
-  width: 100%;
-  color: red;
+  height: 40px;
+  width: 140px;
+  color: rgb(255, 72, 0);
 
-  &:before {
-    background-color: transparent;
+  &:after {
+    background-color: darken($nav-bg, 10%);
     padding: 10px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     word-wrap: none;
     display: block;
     white-space: nowrap;
@@ -151,11 +155,14 @@ a.router-link-exact-active:not(.logo)::before {
 }
 </style>
 
-<style>
+<style lang="scss">
 #app.minimized nav {
   width: 50px;
+  a.logo {
+    width: 50px;
+  }
 }
-#app.minimized a.logo::before {
+#app.minimized a.logo::after {
   content: "^.^";
 }
 
