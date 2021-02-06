@@ -21,6 +21,7 @@
       <div class="movie" v-for="movie in upcoming" :key="movie.id">
         <img
           class="cursor-pointer"
+          :title="movie.title"
           v-if="movie.poster_path"
           :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`"
           @click="
@@ -36,6 +37,7 @@
       <div class="movie" v-for="movie in popular" :key="movie.id">
         <img
           class="cursor-pointer"
+          :title="movie.title"
           v-if="movie.poster_path"
           :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`"
           @click="
@@ -452,7 +454,11 @@ export default {
   .movie {
     width: fit-content;
     img {
-      width: 100px;
+      opacity: 0.5;
+      width: 90px;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
