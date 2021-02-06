@@ -1,7 +1,7 @@
 <template>
   <div class="log-container">
     <a href="#" @click.prevent="clearLog"> <i class="fas fa-trash"></i></a>
-    <div v-if="!entries.length" style="padding-left: 10px">No log</div>
+    <div v-if="entries.length === 0" style="padding-left: 10px">No log</div>
     <div v-for="(entries, day) in entries" :key="day">
       <span>{{ day }}</span>
       <ul class="no-list">
