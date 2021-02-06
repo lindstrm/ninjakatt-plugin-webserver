@@ -40,13 +40,14 @@ module.exports = class Webserver {
 
   subscriptions() {
     this.subscribe('webserver.add-route', this.actOnAddedRoute);
+    this.subscribe('webserver.get-server', () => this.server);
   }
 
   /********* Event Functions *********/
 
   actOnAddedRoute = (method, route, callback) => {
     app[method](route, callback);
-    this.logInfo(`Added route ${method}: ${route}`);
+    this.logDebug(`Added route ${method}: ${route}`);
   };
 
   /********* Plugin Functions *********/

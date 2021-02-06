@@ -44,9 +44,11 @@ export default {
   },
   computed: {
     pluginsWithRoute() {
+      const skip = ["logger"];
       const activeRoutes = this.$router.options.routes.map((r) => r.name);
       return this.$api.plugins
         .map((p) => p.name)
+        .filter((x) => !skip.includes(x))
         .filter((p) => activeRoutes.indexOf(p) > -1)
         .sort(sortString);
     },
