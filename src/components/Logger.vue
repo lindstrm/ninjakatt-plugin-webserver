@@ -2,11 +2,11 @@
   <div class="log-container">
     <a href="#" @click.prevent="clearLog"> <i class="fas fa-trash"></i></a>
     <div v-if="entries.length === 0" style="padding-left: 10px">No log</div>
-    <div v-for="(entries, day) in entries" :key="day">
+    <div v-for="(dayEntries, day) in entries" :key="day">
       <span>{{ day }}</span>
       <ul class="no-list">
         <li
-          v-for="(entry, i) in entries"
+          v-for="(entry, i) in dayEntries"
           :key="i"
           :class="'log-' + entry.color"
           :title="entry.date"
