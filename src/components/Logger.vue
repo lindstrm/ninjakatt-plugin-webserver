@@ -89,6 +89,11 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
+  filter: grayscale(90%);
+  transition: all 0.4s;
+  &:hover {
+    filter: grayscale(0%);
+  }
   a {
     position: absolute;
     top: 10px;
