@@ -5,7 +5,6 @@ const fs = require('fs-extra');
 const path = require('path');
 const exec = require('child_process').exec;
 const cors = require('cors');
-const emitter = global.emitter;
 const { asyncForEach, getPackage } = require('./helpers');
 
 const app = express();

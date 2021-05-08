@@ -8,9 +8,10 @@ async function asyncForEach(array, callback) {
 }
 
 async function getPackage(name, isPlugin = true) {
+  const pluginPath = global.pluginPath ? [global.pluginPath] : [__dirname, '..'];
   const fpath = isPlugin
-    ? path.resolve(__dirname, '..', `ninjakatt-plugin-${name}`, 'package.json')
-    : path.resolve(__dirname, '..', name, 'package.json');
+    ? path.resolve(...pluginPath, `ninjakatt-plugin-${name}`, 'package.json')
+    : path.resolve('/app', 'package.json');
   return await fs.readJSON(fpath);
 }
 
